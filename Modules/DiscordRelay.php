@@ -453,7 +453,10 @@ class DiscordRelay extends BaseActiveModule
 									if ($this->bot->core("settings")->get("discord", "IncLog")) $this->bot->log("DISCORD", "Incoming", ucfirst($msg['author']['username']).": ".strip_tags($msg['content']));
 									if(substr($msg['content'],0,1)!=$this->bot->commpre) {
 										if(mb_detect_encoding($msg['content'], 'UTF-8', true)) $msg['content'] = mb_convert_encoding($msg['content'], 'ISO-8859-1', 'UTF-8');
-										$sent = "[Discord] ".ucfirst($msg['author']['username']).": ".strip_tags($msg['content']);									
+										$nickname = isset($msg['author']['global_name']) && $msg['author']['global_name'] !== null
+											? $msg['author']['global_name']
+											: $msg['author']['username'];
+										$sent = "[Discord] ".ucfirst($nickname).": ".strip_tags($msg['content']);
 										$this->bot->send_output("", $sent,$this->bot->core("settings")->get("discord", "WhatChat"));
 										if ($this->bot->exists_module("irc")&&$this->bot->core("settings")->get("Discord", "IrcRelay")) {
 													$this->bot->core("irc")->send_irc("", "", $sent);
